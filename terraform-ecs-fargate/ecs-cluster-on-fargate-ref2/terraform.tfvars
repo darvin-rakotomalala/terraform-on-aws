@@ -1,0 +1,13 @@
+app_name                     = "myapp"
+aws_region                   = "us-east-1"
+ecs_task_role_name           = "myEcsTaskRole"
+ecs_task_execution_role_name = "myEcsTaskExecutionRole"
+ecs_auto_scale_role_name     = "myEcsAutoScaleRole"
+az_count                     = 2
+app_port                     = 8080
+app_count                    = 2
+health_check_path            = "/"
+fargate_cpu                  = 256
+fargate_memory               = 512
+environment_name_one_key     = "API_KEY"
+environment_name_one_value   = "dummyapikey"

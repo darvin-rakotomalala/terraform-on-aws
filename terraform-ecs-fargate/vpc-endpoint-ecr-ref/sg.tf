@@ -1,0 +1,75 @@
+# ALB Security Group: Edit to restrict access to the application
+resource "aws_security_group" "lb" {
+  name        = "my-app-balancer-sg"
+  description = "Controls access to the ALB"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = var.app_port
+    to_port     = var.app_port
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 80
+    to_port     = 80
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    protocol    = "tcp"
+    from_port   = 8080
+    to_port     = 8080
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Traffic to the ECS cluster should only come from the ALB
+resource "aws_security_group" "ecs_tasks" {
+  name        = "my-ecs-tasks-sg"
+  description = "allow inbound access from the ALB only"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.app_port
+    to_port         = var.app_port
+    security_groups = [aws_security_group.lb.id]
+  }
+
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
