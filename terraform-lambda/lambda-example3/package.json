@@ -1,0 +1,12 @@
+{
+  "name": "lambda-example3",
+  "version": "1.0.0",
+  "description": "In this repository, I’ll create a basic example of how to create a Lambda Function with Terraform.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

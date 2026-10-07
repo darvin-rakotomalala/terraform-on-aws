@@ -1,0 +1,7 @@
+{
+"customerId": "cust_12345",
+"firstName": "Tom",
+"lastName": "Alter",
+"status": "active",
+"isPremium": true
+}
