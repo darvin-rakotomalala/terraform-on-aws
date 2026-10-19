@@ -1,0 +1,9 @@
+region              = "us-east-1"
+project_name        = "rds-bastion"
+availability_zone_1 = "us-east-1a"
+availability_zone_2 = "us-east-1b"
+key_name            = "my-key-pair"
+ami_id              = "ami-020cba7c55df1f615" # Ubuntu Server 24.04 LTS, SSD Volume Type (us-east-1)
+db_username         = "root"
+db_password         = "root2025"
+db_name             = "my_rds_db"
