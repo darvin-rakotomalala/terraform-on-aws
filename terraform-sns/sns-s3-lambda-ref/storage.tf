@@ -1,0 +1,56 @@
+resource "aws_s3_bucket" "bucket" {
+  bucket        = "${var.name}-bucket"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_versioning" "bucket_versioning" {
+  bucket = aws_s3_bucket.bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_encryption" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.s3_key.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "bucket_pab" {
+  bucket                  = aws_s3_bucket.bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  restrict_public_buckets = true
+  ignore_public_acls      = true
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket_lifecycle" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    id     = "abort-multipart-uploads"
+    status = "Enabled"
+
+    filter {}
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 3
+    }
+  }
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.bucket.id
+
+  topic {
+    topic_arn = aws_sns_topic.topic.arn
+    events    = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [aws_sns_topic_policy.default]
+}
